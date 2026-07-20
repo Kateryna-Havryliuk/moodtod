@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>moodtod — твій простір</title>
+  <style>
+    /* Reset margins and padding */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Main body — Muji-style minimalism */
+    body {
+      background: #fafaf8;
+      font-family: 'Georgia', 'Times New Roman', serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* Container with max width for readability */
+    .container {
+      max-width: 745px;
+      width: 100%;
+      padding: 40px 20px;
+    }
+
+    /* Greeting header */
+    .greeting {
+      color: #2c2c2c;
+      font-size: 28px;
+      font-weight: 400;
+      letter-spacing: 0.3px;
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .greeting small {
+      display: block;
+      font-size: 16px;
+      color: #8a8782;
+      font-weight: 300;
+      margin-top: 8px;
+      letter-spacing: 0.2px;
+    }
+
+    /* Disclaimer — AI, not a human */
+    .disclaimer {
+      background: #f5f3f0;
+      padding: 16px 20px;
+      border-radius: 4px;
+      margin-bottom: 32px;
+      border-left: 3px solid #c4bdb3;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #5a554d;
+    }
+
+    .disclaimer strong {
+      color: #3d3b37;
+      font-weight: 600;
+    }
+
+    .disclaimer .ai-badge {
+      display: inline-block;
+      background: #e8e5df;
+      color: #5a554d;
+      font-size: 11px;
+      padding: 2px 12px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .disclaimer a {
+      color: #7a7267;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+
+    .disclaimer a:hover {
+      color: #3d3b37;
+    }
+
+    /* Input area styling */
+    .input-area {
+      margin-bottom: 32px;
+    }
+
+    /* Minimalist textarea — only bottom border */
+    textarea {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid #d6d2cb;
+      padding: 12px 0 8px 0;
+      font-size: 18px;
+      font-family: inherit;
+      color: #1f1f1e;
+      outline: none;
+      resize: none;
+      transition: border-color 0.3s ease;
+      line-height: 1.6;
+      min-height: 60px;
+    }
+
+    textarea:focus {
+      border-bottom-color: #a09b94;
+    }
+
+    textarea::placeholder {
+      color: #b8b3ab;
+      font-style: italic;
+      font-weight: 300;
+      font-size: 17px;
+    }
+
+    /* Send button — barely visible, Muji-style */
+    .send-wrapper {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 6px;
+    }
+
+    button {
+      background: none;
+      border: none;
+      color: #b0aba2;
+      font-size: 15px;
+      font-family: inherit;
+      cursor: pointer;
+      padding: 6px 12px;
+      letter-spacing: 0.5px;
+      transition: color 0.2s ease;
+      font-weight: 300;
+    }
+
+    button:hover {
+      color: #3d3b37;
+    }
+
+    /* Response area — where bot replies appear */
+    .response-area {
+      margin-top: 40px;
+      min-height: 100px;
+      padding-top: 20px;
+      border-top: 1px solid #e8e5df;
+    }
+
+    .response-text {
+      font-size: 20px;
+      line-height: 1.7;
+      color: #2b2a27;
+      font-weight: 300;
+      letter-spacing: 0.2px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .response-text .user-label {
+      color: #8a8782;
+      font-style: italic;
+    }
+
+    .response-text .bot-label {
+      color: #8a8782;
+      font-style: italic;
+    }
+
+    /* Typing indicator */
+    .typing-status {
+      color: #b8b3ab;
+      font-size: 15px;
+      font-weight: 300;
+      margin-top: 6px;
+      letter-spacing: 0.3px;
+    }
+
+    /* Footer support section */
+    .footer-support {
+      margin-top: 40px;
+      text-align: center;
+      border-top: 1px solid #efede9;
+      padding-top: 28px;
+    }
+
+    .footer-support a {
+      color: #bfbab1;
+      text-decoration: none;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      transition: color 0.2s ease;
+      font-weight: 300;
+    }
+
+    .footer-support a:hover {
+      color: #4d4943;
+    }
+
+    .footer-support .legal-note {
+      margin-top: 16px;
+      font-size: 12px;
+      color: #c5c0b7;
+      letter-spacing: 0.3px;
+      font-weight: 300;
+    }
+
+    /* Responsive for mobile */
+    @media (max-width: 480px) {
+      .container { padding: 20px 12px; }
+      .greeting { font-size: 22px; }
+      textarea { font-size: 16px; }
+      .response-text { font-size: 18px; }
+      .disclaimer { font-size: 13px; padding: 14px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Header -->
+  <div class="greeting">
+    moodtod
+    <small>твій простір для підтримки</small>
+  </div>
+
+  <!-- Input area -->
+  <div class="input-area">
+    <textarea id="userInput" rows="2" placeholder="скажи, що на душі..."></textarea>
+    <div class="send-wrapper">
+      <button id="sendBtn">→ надіслати</button>
+    </div>
+  </div>
+
+  <!-- Response display -->
+  <div class="response-area">
+    <div id="responseDisplay" class="response-text"></div>
+    <div id="typingStatus" class="typing-status"></div>
+  </div>
+
+  <!-- AI disclaimer — legal & ethical protection -->
+  <div class="disclaimer">
+    <div class="ai-badge">🤖 AI-асистент</div>
+    <strong>moodtod — це штучний інтелект, а не реальна людина.</strong>
+    <br />
+    Я тут, щоб вислухати та підтримати, але <strong>не замінюю професійного психолога чи лікаря</strong>.
+    <br /><br />
+    Якщо тобі потрібна термінова допомога — звертайся до фахівців:
+    <br />
+    <a href="tel:0800100102">0 800 100 102</a> (лінія психологічної підтримки) · 
+    <a href="tel:116123">116 123</a> (гаряча лінія)
+    <br />
+    <span style="font-size: 13px; color: #8a8782; display: block; margin-top: 6px;">
+      Більше контактів — у моїх відповідях, якщо це необхідно.
+    </span>
+  </div>
+
+  <!-- Footer with copyright -->
+  <div class="footer-support">
+    <div class="legal-note" style="margin-top: 12px; font-size: 12px; color: #c5c0b7;">
+        &copy; 2026 moodtod. Всі права захищено.
+    </div>
+    <div class="legal-note">
+      moodtod — AI-помічник, не є медичним або психологічним засобом
+    </div>
+  </div>
+</div>
+
+<script>
+  // ============================================================
+  // CONFIGURATION
+  // ============================================================
+
+  // Gemini API key (keep empty or use env variables for security)
+  const GEMINI_API_KEY = '-';
+
+  // System prompt defining the bot's personality and rules
+  const SYSTEM_PROMPT = `Ти — moodtod, україномовний AI-помічник психоемоційної підтримки.  
+    ТИ — ШТУЧНИЙ ІНТЕЛЕКТ, А НЕ ЛЮДИНА. Ти не маєш особистих почуттів, досвіду чи думок. Ти тут, щоб підтримати та вислухати.
+
+    У своїх відповідях переважно використовуй принципи когнітивно-поведінкової терапії, емоційної регуляції та підтримувального консультування, якщо вони доречні для ситуації користувача.
+    Твоє завдання — бути поруч, слухати, підтримувати. Відповідай коротко (1-3 речення), тепло, без зайвих порад. Ти не лікар, ти — дружній AI, який вислухає.
+
+    ВАЖЛИВІ ПРИНЦИПИ:
+    - Не давай непроханих порад
+    - Визнавай почуття користувача
+    - Будь м'яким і неосудливим
+    - Якщо не знаєш, що сказати — просто скажи "я поруч"
+    - НІКОЛИ не прикидайся людиною. Якщо тебе запитають — чесно кажи, що ти AI.
+
+    КРИТИЧНІ (КРИЗОВІ) СИТУАЦІЇ — ОБОВ'ЯЗКОВО ПЕРЕНАПРАВЛЯЙ:
+    - Самогубство: 0 800 100 102  
+    - Насильство: 116 123 або 0 800 500 335  
+    - Залежність: 0 800 50 15 20  
+    - Підлітки: teenergizer.org  
+    - Діти та молодь: 0 800 500 225 або 116111  
+    - Криза: 5522 (11:00–19:00)
+
+    Якщо є ризик самогубства, самопошкодження, насильства або іншої кризової ситуації — пріоритетом є безпека користувача та надання контактів екстреної допомоги.
+    Оцінюй кризу за ознаками прямої загрози життю або безпеці (наприклад, думки про смерть, суїцидальні наміри, самопошкодження, загроза життю або безпеці, насильство, булінг, тяжкий емоційний зрив, відчуття повної безвиході тощо).
+    Якщо людина у кризі або є принаймні натяк на це - бери до уваги та надавай контакти потрібних гарячих ліній.
+
+    ---
+
+    НЕ заохочуй та НЕ підтримуй дії, що шкодять користувачу або іншим.
+
+    Тон: спокійний, теплий, неформально-професійний.
+    Уникай офіційної мови.
+
+    🔸 УНИКАЙ:
+    - повчального тону
+    - моралізаторства
+    - знецінення переживань
+    - надмірного оптимізму
+    - шаблонних фраз
+
+    Наприклад, уникай:
+        "Все буде добре"
+        "Треба просто мислити позитивно"
+        "Не переймайтеся"
+    Натомість визнавай складність переживань і допомагай знайти наступний корисний крок.
+
+    🔸 МОВА:  
+    Українська, професійна, але зрозуміла та доступна. 
+    Якщо користувач звертається іншою мовою - адаптуватися та відповідати нею.`;
+
+  // ============================================================
+  // CONTEXT SYSTEM — remembers conversation history
+  // ============================================================
+  class EnhancedResponseSystem {
+    constructor() {
+      this.conversationHistory = [];
+      this.lastInteraction = null;
+    }
+
+    // Add new message pair to history
+    updateContext(message, response) {
+      this.conversationHistory.push({
+        user: message,
+        assistant: response,
+        timestamp: new Date()
+      });
+
+      // Keep only last 10 messages to avoid context overflow
+      if (this.conversationHistory.length > 10) {
+        this.conversationHistory = this.conversationHistory.slice(-10);
+      }
+
+      this.lastInteraction = new Date();
+    }
+
+    // Get summary of last 3 exchanges for context
+    getConversationSummary() {
+      if (this.conversationHistory.length === 0) {
+        return "Це перша розмова з користувачем.";
+      }
+
+      const history = this.conversationHistory.slice(-3);
+      let summary = "Попередня розмова:\n";
+      for (let i = 0; i < history.length; i++) {
+        const msg = history[i];
+        summary += `${i + 1}. Користувач: ${msg.user.slice(0, 100)}... → Асистент: ${msg.assistant.slice(0, 100)}...\n`;
+      }
+
+      return summary;
+    }
+  }
+
+  // Initialize context system
+  const contextSystem = new EnhancedResponseSystem();
+
+  // ============================================================
+  // MODEL SELECTION — tries available Gemini models
+  // ============================================================
+  const WORKING_MODELS = [
+    'gemini-2.0-flash',
+    'gemini-2.0-flash-001',
+    'gemini-1.5-flash',
+    'gemini-flash-latest',
+    'gemini-pro-latest'
+  ];
+
+  let activeModel = null;
+
+  // Test each model until one works
+  async function findWorkingModel() {
+    for (const modelName of WORKING_MODELS) {
+      try {
+        console.log(`🔄 Тестую модель: ${modelName}`);
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${GEMINI_API_KEY}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{
+                parts: [{ text: "Привіт" }]
+              }]
+            })
+          }
+        );
+
+        if (response.ok) {
+          console.log(`✅ Модель ${modelName} працює!`);
+          return modelName;
+        }
+      } catch (e) {
+        console.log(`❌ Модель ${modelName} не працює`);
+      }
+    }
+
+    return null;
+  }
+
+  // ============================================================
+  // FALLBACK RESPONSES — used when API is unavailable
+  // ============================================================
+  const FALLBACK_RESPONSES = [
+    "я поруч.",
+    "розкажи мені.",
+    "ти не винна.",
+    "це важко. але ти тримаєшся.",
+    "я слухаю.",
+    "можеш помовчати зі мною.",
+    "дякую, що сказала.",
+    "ти помічаєш, як дихаєш? воно все ще тут.",
+    "тобі не треба бути сильною сьогодні.",
+    "я розумію.",
+    "ти в безпеці.",
+    "просто побудь тут зі мною.",
+    "цей день мине.",
+    "ти робиш достатньо.",
+    "я тебе чую.",
+    "твої почуття важливі.",
+    "ти не сама.",
+    "дозволь собі відпочити.",
+    "кожен крок — це вже рух.",
+    "я поруч, навіть коли ти мовчиш."
+  ];
+
+  // ============================================================
+  // DOM REFERENCES
+  // ============================================================
+  const userInput = document.getElementById('userInput');
+  const sendBtn = document.getElementById('sendBtn');
+  const responseDisplay = document.getElementById('responseDisplay');
+  const typingStatus = document.getElementById('typingStatus');
+
+  // ============================================================
+  // MAIN MESSAGE HANDLER
+  // ============================================================
+  async function sendMessage() {
+    const userText = userInput.value.trim();
+    if (!userText) return; // Ignore empty messages
+
+    // Display user message
+    responseDisplay.innerHTML = `<span class="user-label">ви:</span> ${escapeHtml(userText)}`;
+    typingStatus.textContent = 'друкує...';
+    userInput.value = '';
+    userInput.disabled = true;
+    sendBtn.disabled = true;
+
+    try {
+      // Get conversation context
+      const contextSummary = contextSystem.getConversationSummary();
+
+      // Try to find a working model if not yet selected
+      if (!activeModel) {
+        activeModel = await findWorkingModel();
+        if (!activeModel) {
+          console.warn('⚠️ Не знайдено жодної працюючої моделі, використовуємо fallback');
+        }
+      }
+
+      let botReply;
+
+      if (activeModel) {
+        // Build full prompt with context
+        const fullPrompt = `${SYSTEM_PROMPT}\n\n${contextSummary}\n\nКористувач: ${userText}\n\nТвоя відповідь (1-3 речення, тепло, підтримуюче):`;
+
+        // Call Gemini API
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/${activeModel}:generateContent?key=${GEMINI_API_KEY}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{
+                parts: [{ text: fullPrompt }]
+              }]
+            })
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`API помилка: ${response.status}`);
+        }
+
+        const data = await response.json();
+        botReply = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'я поруч.';
+        botReply = botReply.replace(/^["']|["']$/g, '').trim();
+
+        // Save to context
+        contextSystem.updateContext(userText, botReply);
+
+      } else {
+        // Use fallback responses if no API model works
+        botReply = FALLBACK_RESPONSES[Math.floor(Math.random() * FALLBACK_RESPONSES.length)];
+        contextSystem.updateContext(userText, botReply);
+      }
+
+      // Display bot reply with typewriter effect
+      await typeText(botReply);
+      typingStatus.textContent = '';
+
+    } catch (error) {
+      console.error('Помилка:', error);
+      typingStatus.textContent = 'сталася помилка, але я поруч.';
+
+      // Emergency fallback
+      const fallbackReply = FALLBACK_RESPONSES[Math.floor(Math.random() * FALLBACK_RESPONSES.length)];
+      await typeText(fallbackReply);
+      typingStatus.textContent = '';
+    } finally {
+      // Re-enable input
+      userInput.disabled = false;
+      sendBtn.disabled = false;
+      userInput.focus();
+    }
+  }
+
+  // ============================================================
+  // TYPEWRITER EFFECT
+  // ============================================================
+  function typeText(text) {
+    return new Promise((resolve) => {
+      let index = 0;
+      responseDisplay.innerHTML = `<span class="bot-label">бот:</span> `;
+      const typingInterval = setInterval(() => {
+        if (index < text.length) {
+          responseDisplay.innerHTML += text.charAt(index);
+          index++;
+        } else {
+          clearInterval(typingInterval);
+          resolve();
+        }
+      }, 18); // Speed of typing (ms per character)
+    });
+  }
+
+  // ============================================================
+  // SECURITY — prevent XSS attacks
+  // ============================================================
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // ============================================================
+  // EVENT LISTENERS
+  // ============================================================
+  sendBtn.addEventListener('click', sendMessage);
+
+  // Send on Enter (without Shift)
+  userInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+  // Auto-focus on load
+  window.addEventListener('load', () => {
+    userInput.focus();
+
+    // Welcome message after 1.5s
+    setTimeout(() => {
+      if (!responseDisplay.textContent) {
+        typeText('привіт. я поруч.');
+      }
+    }, 1500);
+  });
+
+  // ============================================================
+  // INITIALIZATION — find working model on startup
+  // ============================================================
+  (async function init() {
+    console.log('🚀 Ініціалізація moodtod...');
+    activeModel = await findWorkingModel();
+    if (activeModel) {
+      console.log(`✅ Активна модель: ${activeModel}`);
+      typingStatus.textContent = 'готовий говорити.';
+    } else {
+      console.warn('⚠️ API недоступне, використовуємо fallback-відповіді');
+      typingStatus.textContent = 'я поруч, навіть без інтернету.';
+    }
+    // Clear status after 3s
+    setTimeout(() => {
+      typingStatus.textContent = '';
+    }, 3000);
+  })();
+</script>
+
+</body>
+</html>
