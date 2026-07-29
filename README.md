@@ -81,6 +81,5 @@ If `moodtod` helped you — you can leave feedback. Thank you!
 ## 🌱 More Projects
 
 This project is part of my journey from IT to linguistics and psychology. Follow updates on my [GitHub](https://github.com/Kateryna-Havryliuk).
-```
 
 
